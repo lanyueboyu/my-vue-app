@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TodoList</title>
     <script src="./vue.js"></script>
 </head>
+
 <body>
     <div id="root">
         <div>
-            <input v-model="inputValue"/>
+            <input v-model="inputValue" />
             <button @click="handleSubmit">提交</button>
         </div>
         <ul>
             <!-- <li v-for="(item, index) of list" :key="index">
                 {{item}}
             </li> -->
-            <todo-item v-for="(item, index) of list" :key="index" :content="item"></todo-item>
+            <todo-item v-for="(item, index) of list" :key="index" :content="item" :index="index" @delete="handleDelete">
+            </todo-item>
         </ul>
     </div>
     <script>
 
         // 创建全局组件
         Vue.component('todo-item', {
-            props: ['content'],
-            template: '<li>{{content}}</li>'
+            props: ['content', 'index'],
+            template: '<li @click="handleClick">{{content}}</li>',
+            methods: {
+                handleClick: function () {
+                    // 'delete'为自定义方法名
+                    this.$emit('delete', this.index)
+                }
+            }
         })
 
         // 局部组件
@@ -42,13 +51,18 @@
                 inputValue: '',
                 list: []
             },
-            methods:{
-                handleSubmit: function(){
+            methods: {
+                handleSubmit: function () {
                     this.list.push(this.inputValue);
-                    this.inputValue ='';
+                    this.inputValue = '';
+                },
+                handleDelete: function(index){
+                    // alert('delete')
+                    this.list.splice(index, 1);
                 }
             }
         })
     </script>
 </body>
+
 </html>
